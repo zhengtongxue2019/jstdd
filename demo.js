@@ -16,26 +16,25 @@ let invoices = [
 ];
 
 function statement(invoice, plays){
+	return renderPlainText(invoice, plays);
 
-	let result = `Statement for ${invoice.customer}\n`;
-
-	let totalAmount = countTotalAmount();
-
-	for (let perf of invoice.performances){					
-		//print line for this order
-		result += `\t${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
-	}
-	
-	result += `Amount owed is ${usd(totalAmount)}\n`;
-	result += `You earned ${totalVolumeCredits()} credits\n`;
-	return result;
-
-	function countTotalAmount() {
-		let totalAmount = 0;
+	function renderPlainText(invoice, plays) {
+		let result = `Statement for ${invoice.customer}\n`;
 		for (let perf of invoice.performances) {
-			totalAmount += amountFor(perf);
+			//print line for this order
+			result += `\t${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
 		}
-		return totalAmount;
+		result += `Amount owed is ${usd(totalAmount())}\n`;
+		result += `You earned ${totalVolumeCredits()} credits\n`;
+		return result;
+	}
+
+	function totalAmount() {
+		let result = 0;
+		for (let perf of invoice.performances) {
+			result += amountFor(perf);
+		}
+		return result;
 	}
 
 	function totalVolumeCredits() {
