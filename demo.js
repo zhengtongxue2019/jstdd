@@ -18,16 +18,17 @@ let invoices = [
 function statement(invoice, plays){
 	let totalAmount = 0;
 	let volumeCredits = 0;
+	for (let perf of invoice.performances){					
+		//add volume credits
+		volumeCredits += Math.max(perf.audience - 30, 0);
+		//add extra credit for every ten comedy attendees
+		if("comedy" == playFor(perf).type) 
+			volumeCredits+=Math.floor(perf.audience/5);
+	}
+
 	let result = `Statement for ${invoice.customer}\n`;
 	const format = new Intl.NumberFormat("en-US", {style:"currency", currency:"USD", minimumFractionDigits:2}).format;
-	for (let perf of invoice.performances){		
-			
-			//add volume credits
-			volumeCredits += Math.max(perf.audience - 30, 0);
-			//add extra credit for every ten comedy attendees
-			if("comedy" == playFor(perf).type) 
-				volumeCredits+=Math.floor(perf.audience/5);
-			
+	for (let perf of invoice.performances){					
 			//print line for this order
 			result += `\t${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
 			totalAmount += amountFor(perf);
