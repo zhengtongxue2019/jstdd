@@ -21,26 +21,26 @@ function statement(invoice, plays){
 	let result = `Statement for ${invoice.customer}\n`;
 	const format = new Intl.NumberFormat("en-US", {style:"currency", currency:"USD", minimumFractionDigits:2}).format;
 	for (let perf of invoice.performances){
-			const play = plays[perf.playId];
+			const play =  plays[perf.playId];
 			
 			let thisAmount = 0;
-			
-			switch(play.type){
+	
+			switch (play.type) {
 				case "tradedy":
-				thisAmount = 40000;
-				if(perf.audience > 30){
-					thisAmount += 1000 * (perf.audience - 30);
-				}
-				break;
+					thisAmount = 40000;
+					if (perf.audience > 30) {
+						thisAmount += 1000 * (perf.audience - 30);
+					}
+					break;
 				case "comedy":
-				thisAmount = 30000;
-				if(perf.audience > 20){
-					thisAmount += 1000 + 500 * (perf.audience - 20);
-				}
-				thisAmount += 300 * perf.audience;
-				break;
+					thisAmount = 30000;
+					if (perf.audience > 20) {
+						thisAmount += 1000 + 500 * (perf.audience - 20);
+					}
+					thisAmount += 300 * perf.audience;
+					break;
 				default:
-				throw new Error(`unknown type: ${play.type}`);
+					throw new Error(`unknown type: ${play.type}`);
 			}
 			
 			//add volume credits
@@ -58,7 +58,6 @@ function statement(invoice, plays){
 	result += `You earned ${volumeCredits} credits\n`;
 	return result;
 }
-
 
 function calc(){
 	let result = "calc start...\n";
