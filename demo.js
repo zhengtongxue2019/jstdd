@@ -23,6 +23,7 @@ function statement(invoice, plays){
 
 	function enrichPerformance(aPerformance){
 		const result = Object.assign({}, aPerformance);
+		result.play = playFor(aPerformance);
 		return result;
 	}
 
@@ -30,7 +31,7 @@ function statement(invoice, plays){
 		let result = `Statement for ${data.customer}\n`;
 		for (let perf of data.performances) {
 			//print line for this order
-			result += `\t${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
+			result += `\t${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
 		}
 		result += `Amount owed is ${usd(totalAmount())}\n`;
 		result += `You earned ${totalVolumeCredits()} credits\n`;
