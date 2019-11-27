@@ -43,16 +43,17 @@ function statement(invoice, plays){
 	}
 
 	function totalAmount(data) {
+		return data.performances.reduce((total, p)=> total+p.amount, 0);
 		let result = 0;
-		for (let perf of data.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常
+		for (let perf of data.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常,后面根据需要的变更重新传入参数data后改为data
 			result += perf.amount;
 		}
 		return result;
 	}
 
-	function totalVolumeCredits() {
+	function totalVolumeCredits(data) {
 		let result = 0;
-		for (let perf of statementData.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常
+		for (let perf of data.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常,后面根据需要的变更重新传入参数data后改为data
 			//add volume credits
 			result += perf.volumeCredits;
 		}
