@@ -42,7 +42,7 @@ function statement(invoice, plays){
 
 	function totalAmount() {
 		let result = 0;
-		for (let perf of statementData.performances) {
+		for (let perf of statementData.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常
 			result += perf.amount;
 		}
 		return result;
@@ -50,7 +50,7 @@ function statement(invoice, plays){
 
 	function totalVolumeCredits() {
 		let result = 0;
-		for (let perf of statementData.performances) {
+		for (let perf of statementData.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常
 			//add volume credits
 			result += perf.volumeCredits;
 		}
