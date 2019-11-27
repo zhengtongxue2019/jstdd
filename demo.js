@@ -25,6 +25,7 @@ function statement(invoice, plays){
 		const result = Object.assign({}, aPerformance);
 		result.play = playFor(result);
 		result.amount = amountFor(result);
+		result.volumeCredits = volumeCreditsFor(result);
 		return result;
 	}
 
@@ -32,7 +33,7 @@ function statement(invoice, plays){
 		let result = `Statement for ${data.customer}\n`;
 		for (let perf of data.performances) {
 			//print line for this order
-			result += `\t${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
+			result += `\t${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
 		}
 		result += `Amount owed is ${usd(totalAmount())}\n`;
 		result += `You earned ${totalVolumeCredits()} credits\n`;
@@ -41,17 +42,17 @@ function statement(invoice, plays){
 
 	function totalAmount() {
 		let result = 0;
-		for (let perf of invoice.performances) {
-			result += amountFor(perf);
+		for (let perf of statementData.performances) {
+			result += perf.amount;
 		}
 		return result;
 	}
 
 	function totalVolumeCredits() {
 		let result = 0;
-		for (let perf of invoice.performances) {
+		for (let perf of statementData.performances) {
 			//add volume credits
-			result += volumeCreditsFor(perf);
+			result += perf.volumeCredits;
 		}
 		return result;
 	}
@@ -64,7 +65,7 @@ function statement(invoice, plays){
 		let result = 0;
 		result += Math.max(aPerformance.audience - 30, 0);
 		//add extra credit for every ten comedy attendees
-		if ("comedy" == playFor(aPerformance).type)
+		if ("comedy" == aPerformance.play.type)
 			result += Math.floor(aPerformance.audience / 5);
 		return result;
 	}
@@ -75,7 +76,7 @@ function statement(invoice, plays){
 
 	function amountFor(aPerformance) {
 		let result = 0;
-		switch (playFor(aPerformance).type) {
+		switch (aPerformance.play.type) {
 			case "tradedy":
 				result = 40000;
 				if (aPerformance.audience > 30) {
