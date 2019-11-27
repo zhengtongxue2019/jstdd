@@ -16,12 +16,16 @@ let invoices = [
 ];
 
 function statement(invoice, plays){
-	const statementData = {};
-	statementData.customer = invoice.customer;
-	statementData.performances = invoice.performances.map(enrichPerformance);
-	statementData.totalAmount = totalAmount(statementData);
-	statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-	return renderPlainText(statementData, plays);
+	return renderPlainText(createStatementData(invoice, plays));
+
+	function createStatementData(invoice, plays) {
+		const statementData = {};
+		statementData.customer = invoice.customer;
+		statementData.performances = invoice.performances.map(enrichPerformance);
+		statementData.totalAmount = totalAmount(statementData);
+		statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+		return statementData;
+	}
 
 	function enrichPerformance(aPerformance){
 		const result = Object.assign({}, aPerformance);
@@ -52,6 +56,7 @@ function statement(invoice, plays){
 	}
 
 	function totalVolumeCredits(data) {
+		return data.performances.reduce((total, p)=> total+p.volumeCredits, 0);
 		let result = 0;
 		for (let perf of data.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常,后面根据需要的变更重新传入参数data后改为data
 			//add volume credits
