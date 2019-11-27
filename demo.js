@@ -23,7 +23,8 @@ function statement(invoice, plays){
 
 	function enrichPerformance(aPerformance){
 		const result = Object.assign({}, aPerformance);
-		result.play = playFor(aPerformance);
+		result.play = playFor(result);
+		result.amount = amountFor(result);
 		return result;
 	}
 
@@ -89,7 +90,7 @@ function statement(invoice, plays){
 				result += 300 * aPerformance.audience;
 				break;
 			default:
-				throw new Error(`unknown type: ${playFor(aPerformance).type}`);
+				throw new Error(`unknown type: ${aPerformance.play.type}`);
 		}
 		return result;
 	}
