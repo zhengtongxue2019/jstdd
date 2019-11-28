@@ -1,33 +1,51 @@
 let players = {
-	"hamlet":{"name":"hamlet","type":"tradedy"},
-	"aslike":{"name":"As you like it","type":"comedy"},
-	"otherllo":{"name":"otherllo","type":"tradedy"}
+	"hamlet": { "name": "hamlet", "type": "tradedy" },
+	"aslike": { "name": "As you like it", "type": "comedy" },
+	"otherllo": { "name": "otherllo", "type": "tradedy" }
 };
 
 let invoices = [
 	{
-		"customer":"BigCo",
-		"performances":[
-			{"playId":"hamlet", "audience": 55},
-			{"playId":"aslike", "audience": 35},
-			{"playId":"otherllo", "audience": 40}
+		"customer": "BigCo",
+		"performances": [
+			{ "playId": "hamlet", "audience": 55 },
+			{ "playId": "aslike", "audience": 35 },
+			{ "playId": "otherllo", "audience": 40 }
 		]
 	}
 ];
 
-function statement(invoice, plays){
+function statement(invoice, plays) {
 	return renderPlainText(createStatementData(invoice, plays));
+}
 
-	function createStatementData(invoice, plays) {
-		const statementData = {};
-		statementData.customer = invoice.customer;
-		statementData.performances = invoice.performances.map(enrichPerformance);
-		statementData.totalAmount = totalAmount(statementData);
-		statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-		return statementData;
+function usd(aNumber) {
+	return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber / 100);
+}
+
+function renderPlainText(data, plays) {
+	let result = `Statement for ${data.customer}\n`;
+	for (let perf of data.performances) {
+		//print line for this order
+		result += `\t${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
 	}
+	result += `Amount owed is ${usd(data.totalAmount)}\n`;
+	result += `You earned ${data.totalVolumeCredits} credits\n`;
+	return result;
+}
 
-	function enrichPerformance(aPerformance){
+
+
+function createStatementData(invoice, plays) {
+	const statementData = {};
+	statementData.customer = invoice.customer;
+	statementData.performances = invoice.performances.map(enrichPerformance);
+	statementData.totalAmount = totalAmount(statementData);
+	statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+	return statementData;
+
+
+	function enrichPerformance(aPerformance) {
 		const result = Object.assign({}, aPerformance);
 		result.play = playFor(result);
 		result.amount = amountFor(result);
@@ -35,19 +53,10 @@ function statement(invoice, plays){
 		return result;
 	}
 
-	function renderPlainText(data, plays) {
-		let result = `Statement for ${data.customer}\n`;
-		for (let perf of data.performances) {
-			//print line for this order
-			result += `\t${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
-		}
-		result += `Amount owed is ${usd(data.totalAmount)}\n`;
-		result += `You earned ${data.totalVolumeCredits} credits\n`;
-		return result;
-	}
+
 
 	function totalAmount(data) {
-		return data.performances.reduce((total, p)=> total+p.amount, 0);
+		return data.performances.reduce((total, p) => total + p.amount, 0);
 		let result = 0;
 		for (let perf of data.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常,后面根据需要的变更重新传入参数data后改为data
 			result += perf.amount;
@@ -56,7 +65,7 @@ function statement(invoice, plays){
 	}
 
 	function totalVolumeCredits(data) {
-		return data.performances.reduce((total, p)=> total+p.volumeCredits, 0);
+		return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
 		let result = 0;
 		for (let perf of data.performances) {//原书上此处为data，运行报错，修改为statementData后运行正常,后面根据需要的变更重新传入参数data后改为data
 			//add volume credits
@@ -64,11 +73,7 @@ function statement(invoice, plays){
 		}
 		return result;
 	}
-
-	function usd(aNumber) {
-		return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber/100);
-	}
-
+	
 	function volumeCreditsFor(aPerformance) {
 		let result = 0;
 		result += Math.max(aPerformance.audience - 30, 0);
@@ -105,12 +110,12 @@ function statement(invoice, plays){
 	}
 }
 
-function calc(){
+function calc() {
 	let result = "calc start...\n";
-	for (let invoice of invoices){
-		result += statement(invoice, players); 
+	for (let invoice of invoices) {
+		result += statement(invoice, players);
 	}
-	result +="calc end...\n";
+	result += "calc end...\n";
 	return result;
 }
 
